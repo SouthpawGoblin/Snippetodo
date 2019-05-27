@@ -1,46 +1,45 @@
 <template>
   <a-locale-provider :locale="zh_CN">
-    <div id="app">
-      <img src="./assets/logo.png">
-      <div>
-        <p>
-          If Ant-Design-Vue is successfully added to this project, you'll see an
-          <code v-text="'<a-button>'"></code>
-          <code v-text="'<a-pagination>'"></code>
-          below
-        </p>
-        <a-button type="primary">Primary</a-button>
-        <a-pagination size="small" :total="50" showSizeChanger showQuickJumper />
-      </div>
-      <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <div id="app" class="p-2">
+      <a-radio-group defaultValue="snippet" buttonStyle="solid" @change="switchMode" class="w-100">
+        <a-radio-button value="snippet" class="w-50">Snippets</a-radio-button>
+        <a-radio-button value="todo" class="w-50">TODOs</a-radio-button>
+      </a-radio-group>
+      <router-view></router-view>
     </div>
   </a-locale-provider>
 </template>
 
-<script>
+<script lang="ts">
+import { Component, Vue } from 'vue-property-decorator';
 import zh_CN from 'ant-design-vue/lib/locale-provider/zh_CN'
-import HelloWorld from './components/HelloWorld.vue'
 
-export default {
+@Component({
   name: 'app',
-  data() {
-    return {
-      zh_CN,
-    }
-  },
   components: {
-    HelloWorld
+  },
+})
+export default class Snippetodo extends Vue {
+  public zh_CN: any = zh_CN;
+
+  created() {
+    this.$router.push({name: 'snippet'});
+  }
+
+  switchMode(e: any) {
+    this.$router.push({name: e.target.value});
   }
 }
 </script>
 
-<style>
+<style lang="less">
+@import url(./less/common.less);
+
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+  .h-100;
+  .text-center;
 }
 </style>

@@ -1,11 +1,36 @@
 'use strict'
 
-import { app, protocol, BrowserWindow } from 'electron'
+import { app, protocol, BrowserWindow, Menu } from 'electron'
 import {
   createProtocol,
   installVueDevtools
 } from 'vue-cli-plugin-electron-builder/lib'
+import Lokijs from 'lokijs';
+import STGlobal from '@/classes/global';
+import fs from 'fs';
 const isDevelopment = process.env.NODE_ENV !== 'production'
+
+// load lokijs db
+if (!fs.existsSync('./db')) {
+  fs.mkdirSync('./db');
+}
+const lokiDB = new Lokijs('./db/st.db', {
+  autoload: true,
+  autoloadCallback: (err) => {
+    if (!lokiDB.getCollection('snippets')) {
+      lokiDB.addCollection('snippets', {
+        unique: ['id'],
+      });
+    }
+    if (!lokiDB.getCollection('todos')) {
+      lokiDB.addCollection('todos', {
+        unique: ['id'],
+      });
+    }
+    lokiDB.saveDatabase();
+  },
+});
+(global as STGlobal).db = lokiDB;
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -16,9 +41,11 @@ protocol.registerSchemesAsPrivileged([{scheme: 'app', privileges: { secure: true
 
 function createWindow () {
   // Create the browser window.
-  win = new BrowserWindow({ width: 800, height: 600, webPreferences: {
+  win = new BrowserWindow({ width: 400, height: 800, webPreferences: {
     nodeIntegration: true
   } })
+  win.setMaximizable(false);
+  Menu.setApplicationMenu(null);
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
