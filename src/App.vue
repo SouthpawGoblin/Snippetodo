@@ -39,6 +39,9 @@ export default class Snippetodo extends Vue {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
   .h-100;
   .text-center;
 }
