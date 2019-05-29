@@ -45,6 +45,7 @@ function createWindow () {
     nodeIntegration: true
   } })
   win.setMaximizable(false);
+  win.setMinimumSize(400, 600);
   Menu.setApplicationMenu(null);
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {

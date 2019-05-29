@@ -1,15 +1,18 @@
 <template>
   <div id="snippet-view">
-    <div class="snippet-list">
-      <Snippet 
-        v-for="snippet in snippets" 
-        :key="snippet.id" 
-        :snippet="snippet"
-        @copy="copySnippet" 
-        @update="updateSnippet"
-        @delete="deleteSnippet">
-      </Snippet>
-    </div>
+    <VuePerfectScrollbar ref="scroll">
+      <div class="snippet-list">
+        <Snippet 
+          v-for="snippet in snippets" 
+          :key="snippet.id" 
+          :snippet="snippet"
+          @copy="copySnippet" 
+          @update="updateSnippet"
+          @delete="deleteSnippet"
+          @collapseChanged="updateScroll">
+        </Snippet>
+      </div>
+    </VuePerfectScrollbar>
     <div class="snippet-textarea">
       <a-textarea placeholder="snippet content" :autosize="{ minRows: 6, maxRows: 6 }" v-model="newSnippetContent"/>
       <a-button type="primary" icon="check" title="submit" class="h-100 ml-1" @click="createSnippet"></a-button>
@@ -22,10 +25,12 @@ import { Component, Vue } from 'vue-property-decorator';
 import Snippet from '@/components/Snippet.vue';
 import MySnippet from '../classes/MySnippet';
 import { ADD_SNIPPET, UPDATE_SNIPPET, DELETE_SNIPPET } from '../store/mutation-types';
+import VuePerfectScrollbar from 'vue-perfect-scrollbar'
 
 @Component({
   components: {
-    Snippet
+    Snippet,
+    VuePerfectScrollbar
   },
 })
 export default class SnippetView extends Vue {
@@ -54,6 +59,13 @@ export default class SnippetView extends Vue {
 
   deleteSnippet(snippet: MySnippet) {
     this.$store.dispatch(DELETE_SNIPPET, snippet);
+    this.updateScroll();
+  }
+
+  updateScroll() {
+    Vue.nextTick(() => {
+      (this.$refs.scroll as any).update();
+    });
   }
 }
 </script>

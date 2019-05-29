@@ -1,7 +1,7 @@
 <template>
   <div class="st-snippet">
     <div class="st-snippet-head" @mouseenter="showTools = true;" @mouseleave="showTools = false;">
-      <div class="st-snippet-head-title" @click="!editing && (collapsed = !collapsed)">
+      <div class="st-snippet-head-title" @click="!editing && setCollapse(!collapsed)">
         <span v-if="!editing">{{snip.title}}</span>
         <a-input v-if="editing" size="small" placeholder="snippet title" v-model="snip.title" />
       </div>
@@ -14,7 +14,7 @@
     </div>
     <div class="st-snippet-body" v-show="!collapsed">
       <pre v-if="!editing">{{snip.content}}</pre>
-      <a-textarea v-if="editing" placeholder="snippet content" v-model="snip.content" />
+      <a-textarea v-if="editing" placeholder="snippet content" :rows="contentRowCount" v-model="snip.content" />
     </div>
   </div>
 </template>
@@ -34,8 +34,22 @@ export default class Snippet extends Vue {
   private showTools: boolean = false;
   private editing: boolean = false;
 
+  get contentRowCount() {
+    if (!!this.snip) {
+      return Math.max(this.snip.content.split('\n').length, 1) + 1;
+    } else {
+      return 2;
+    }
+  }
+
   created() {
     this.snip = _.cloneDeep(this.snippet);
+  }
+
+  setCollapse(flag: boolean) {
+    const collapseChanged = flag !== this.collapsed;
+    this.collapsed = flag;
+    collapseChanged && this.$emit('collapseChanged', flag);
   }
 
   copy(e: any) {
@@ -59,7 +73,7 @@ export default class Snippet extends Vue {
 
   beginEdit() {
     this.editing = true;
-    this.collapsed = false;
+    this.setCollapse(false);
   }
 
   confirmEdit() {
