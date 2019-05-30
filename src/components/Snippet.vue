@@ -21,7 +21,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
-import Clipboard from 'clipboard';
+import { remote } from 'electron';
 import _ from 'lodash';
 import MySnippet from '@/classes/MySnippet';
 
@@ -53,22 +53,9 @@ export default class Snippet extends Vue {
   }
 
   copy(e: any) {
-    const clipboard = new Clipboard(e.target, { 
-      text: () => this.snip ? this.snip.content  : ''
-    });
-    clipboard.on('success', e => {
-      this.$emit('copy', true);
-      clipboard.off('error');
-      clipboard.off('success');
-      clipboard.destroy();
-    });
-    clipboard.on('error', e => {
-      this.$emit('copy', false);
-      clipboard.off('error');
-      clipboard.off('success');
-      clipboard.destroy();
-    });
-    clipboard.onClick(e);
+    const clipboard = remote.getGlobal('clipboard');
+    clipboard.writeText(this.snip ? this.snip.content  : '');
+    this.$emit('copy', true);
   }
 
   beginEdit() {

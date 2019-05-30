@@ -1,6 +1,6 @@
 'use strict'
 
-import { app, protocol, BrowserWindow, Menu } from 'electron'
+import { app, protocol, BrowserWindow, Menu, clipboard } from 'electron'
 import {
   createProtocol,
   installVueDevtools
@@ -8,7 +8,11 @@ import {
 import Lokijs from 'lokijs';
 import STGlobal from '@/classes/global';
 import fs from 'fs';
-const isDevelopment = process.env.NODE_ENV !== 'production'
+
+const isDevelopment = process.env.NODE_ENV !== 'production';
+
+// global clipboard
+(global as STGlobal).clipboard = clipboard;
 
 // load lokijs db
 if (!fs.existsSync('./db')) {
