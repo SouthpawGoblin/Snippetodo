@@ -14,6 +14,8 @@
       </div>
     </VuePerfectScrollbar>
     <div class="snippet-textarea">
+      <a-alert v-if="showSuccessAlert" message="Snippet Copied!" type="success" showIcon />
+      <a-alert v-if="showErrorAlert" message="Copy Failed" type="error" showIcon />
       <a-textarea placeholder="snippet content" :autosize="{ minRows: 6, maxRows: 6 }" v-model="newSnippetContent"/>
       <a-button type="primary" icon="check" title="submit" class="h-100 ml-1" @click="createSnippet"></a-button>
     </div>
@@ -22,6 +24,7 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
+import _ from 'lodash';
 import Snippet from '@/components/Snippet.vue';
 import MySnippet from '../classes/MySnippet';
 import { ADD_SNIPPET, UPDATE_SNIPPET, DELETE_SNIPPET } from '../store/mutation-types';
@@ -36,12 +39,14 @@ import VuePerfectScrollbar from 'vue-perfect-scrollbar'
 export default class SnippetView extends Vue {
   private snippets: MySnippet[] = this.$store.getters.snippets;
   private newSnippetContent: string = '';
+  private showSuccessAlert: boolean = false;
+  private showErrorAlert: boolean = false;
 
   copySnippet(success: boolean) {
     if (success) {
-      this.$message.success('Copy Success!');
+      this.showAlert('success');
     } else {
-      this.$message.success('Copy Failed');
+      this.showAlert('error');
     }
   }
 
@@ -67,6 +72,16 @@ export default class SnippetView extends Vue {
       (this.$refs.scroll as any).update();
     });
   }
+
+  showAlert(type: 'success' | 'error') {
+    if (type === 'success') {
+      this.showSuccessAlert = true;
+      setTimeout(() => {this.showSuccessAlert = false}, 2000);
+    } else if (type === 'error') {
+      this.showErrorAlert = true;
+      setTimeout(() => {this.showErrorAlert = false}, 2000);
+    }
+  }
 }
 </script>
 
@@ -91,6 +106,12 @@ export default class SnippetView extends Vue {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    position: relative;
+    & .ant-alert {
+      width: 100%;
+      position: absolute;
+      top: -@unit * 6;
+    }
     & > textarea {
       resize: none;
       white-space: pre;
