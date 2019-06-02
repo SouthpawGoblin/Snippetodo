@@ -16,7 +16,11 @@
     <div class="snippet-textarea">
       <a-alert v-if="showSuccessAlert" message="Snippet Copied!" type="success" showIcon />
       <a-alert v-if="showErrorAlert" message="Copy Failed" type="error" showIcon />
-      <a-textarea placeholder="snippet content" :autosize="{ minRows: 6, maxRows: 6 }" v-model="newSnippetContent"/>
+      <a-textarea 
+        placeholder="Input snippet content, Ctrl + Enter to submit." 
+        :autosize="{ minRows: 6, maxRows: 6 }" 
+        v-model="newSnippetContent"
+        @pressEnter="onPressEnter($event)"/>
       <a-button type="primary" icon="check" title="submit" class="h-100 ml-1" @click="createSnippet"></a-button>
     </div>
   </div>
@@ -80,6 +84,12 @@ export default class SnippetView extends Vue {
     } else if (type === 'error') {
       this.showErrorAlert = true;
       setTimeout(() => {this.showErrorAlert = false}, 2000);
+    }
+  }
+
+  onPressEnter(e: any) {
+    if (e.ctrlKey) {
+      this.createSnippet();
     }
   }
 }

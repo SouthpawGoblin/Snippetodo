@@ -6,8 +6,9 @@ import {
   installVueDevtools
 } from 'vue-cli-plugin-electron-builder/lib'
 import Lokijs from 'lokijs';
-import STGlobal from '@/classes/global';
+import STGlobal from '@/classes/STGlobal';
 import fs from 'fs';
+import STBrowserWindow from './classes/STBrowserWindow';
 
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
@@ -38,14 +39,14 @@ const lokiDB = new Lokijs('./db/st.db', {
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
-let win: BrowserWindow | null
+let win: STBrowserWindow | null
 
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([{scheme: 'app', privileges: { secure: true, standard: true } }])
 
 function createWindow () {
   // Create the browser window.
-  win = new BrowserWindow({ width: 400, height: 800, webPreferences: {
+  win = new STBrowserWindow({ width: 400, height: 800, webPreferences: {
     nodeIntegration: true
   } })
   win.setMaximizable(false);
@@ -61,6 +62,10 @@ function createWindow () {
     // Load the index.html when not in development
     win.loadURL('app://./index.html')
   }
+
+  win.on('move', () => {
+    
+  })
 
   win.on('closed', () => {
     win = null
