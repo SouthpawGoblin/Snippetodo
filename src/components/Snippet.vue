@@ -88,7 +88,7 @@ export default class Snippet extends Vue {
   }
   &-head {
     min-height: 42px;
-    border-bottom: 1px solid #e8e8e8;
+    background: rgba(24, 144, 255, 0.05);
     padding: @unit;
     display: flex;
     flex-direction: row;

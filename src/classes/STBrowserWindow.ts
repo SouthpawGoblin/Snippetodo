@@ -3,7 +3,7 @@ import { screen, BrowserWindow, Rectangle } from 'electron'
 export default class STBrowserWindow extends BrowserWindow {
   private stickable: boolean = true;
   private sticky: boolean = false;
-  private stickyDistance: number = 20;
+  private stickyDistance: number = 10;
 
   getStickable() {
     return this.stickable;
