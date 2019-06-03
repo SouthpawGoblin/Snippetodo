@@ -17,7 +17,7 @@
       <a-alert v-if="showSuccessAlert" message="Snippet Copied!" type="success" showIcon />
       <a-alert v-if="showErrorAlert" message="Copy Failed" type="error" showIcon />
       <a-textarea 
-        placeholder="Input snippet content, Ctrl + Enter to submit." 
+        placeholder="Input snippet content, Ctrl+Enter to submit." 
         :autosize="{ minRows: 6, maxRows: 6 }" 
         v-model="newSnippetContent"
         @pressEnter="onPressEnter($event)"/>
@@ -56,7 +56,14 @@ export default class SnippetView extends Vue {
 
   createSnippet() {
     if (!this.newSnippetContent.length) return;
-    const title = this.newSnippetContent.split('\n')[0].slice(0, 20);
+    let title = '';
+    for (let line of this.newSnippetContent.split('\n')) {
+      title = line.trim().slice(0, 100);
+      if (title.length > 0) {
+        break;
+      }
+    }
+    title = title.length > 0 ? title : '(Blank Snippet)';
     const newSnippet = new MySnippet(title, this.newSnippetContent);
     this.$store.dispatch(ADD_SNIPPET, newSnippet);
     this.newSnippetContent = '';
