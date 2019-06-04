@@ -6,14 +6,14 @@ import {
   installVueDevtools
 } from 'vue-cli-plugin-electron-builder/lib'
 import Lokijs from 'lokijs';
-import STGlobal from '@/classes/STGlobal';
+import MyGlobal from '@/classes/MyGlobal';
 import fs from 'fs';
-import STBrowserWindow from './classes/STBrowserWindow';
+import MyBrowserWindow from './classes/MyBrowserWindow';
 
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
 // global clipboard
-(global as STGlobal).clipboard = clipboard;
+(global as MyGlobal).clipboard = clipboard;
 
 // load lokijs db
 if (!fs.existsSync('./db')) {
@@ -35,20 +35,25 @@ const lokiDB = new Lokijs('./db/st.db', {
     lokiDB.saveDatabase();
   },
 });
-(global as STGlobal).db = lokiDB;
+(global as MyGlobal).db = lokiDB;
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
-let win: STBrowserWindow | null
+let win: MyBrowserWindow | null
 
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([{scheme: 'app', privileges: { secure: true, standard: true } }])
 
 function createWindow () {
   // Create the browser window.
-  win = new STBrowserWindow({ width: 400, height: 800, webPreferences: {
-    nodeIntegration: true
-  } })
+  win = new MyBrowserWindow({ 
+    width: 400, 
+    height: 800, 
+    alwaysOnTop: true, 
+    webPreferences: {
+      nodeIntegration: true
+    } 
+  })
   win.setMaximizable(false);
   win.setMinimumSize(400, 600);
   Menu.setApplicationMenu(null);
