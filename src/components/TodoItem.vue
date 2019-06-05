@@ -1,13 +1,13 @@
 <template>
   <div class="st-todo" @mouseenter="showTools = true;" @mouseleave="showTools = false;">
-    <div class="st-todo-content" @click="!editing && setCollapse(!collapsed)">
-      <span v-if="!editing">{{snip.title}}</span>
-      <a-input v-if="editing" size="small" placeholder="snippet title" v-model="snip.title" />
+    <div class="st-todo-content">
+      <a-checkbox v-if="!editing" @change="onCheckChanged($event)">{{todo.content}}</a-checkbox>
+      <a-input v-if="editing" size="small" placeholder="todo content" v-model="todo.content" />
     </div>
     <div class="st-todo-tools" v-show="showTools">
       <a-button shape="circle" size="small" icon="edit" title="edit" v-show="!editing" @click="beginEdit"></a-button>
       <a-button shape="circle" size="small" icon="check" title="confirm" v-show="editing" @click="confirmEdit"></a-button>
-      <a-button shape="circle" size="small" type="danger" icon="delete" title="delete" :disabled="editing" @click="remove"></a-button>
+      <a-button shape="circle" size="small" type="danger" icon="delete" title="delete" v-if="!todo.finished" :disabled="editing" @click="remove"></a-button>
     </div>
   </div>
 </template>
@@ -28,6 +28,12 @@ export default class TodoItem extends Vue {
 
   created() {
     this.todo = _.cloneDeep(this.todoItem);
+  }
+
+  onCheckChanged(e: any) {
+    if (this.todo) {
+      this.todo.finished = e.target.checked;
+    }
   }
 
   beginEdit() {

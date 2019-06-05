@@ -4,12 +4,14 @@ import _ from 'lodash';
 import Lokijs from 'lokijs';
 import { remote } from 'electron';
 import MySnippet from '@/classes/MySnippet';
-import { RELOAD_SNIPPETS, ADD_SNIPPET, DELETE_SNIPPET, UPDATE_SNIPPET } from './mutation-types';
+import { ADD_SNIPPET, DELETE_SNIPPET, UPDATE_SNIPPET } from './mutation-types';
+import MyTodo from '@/classes/MyTodo';
 
 Vue.use(Vuex)
 
 export interface MyState {
   snippets: MySnippet[];
+  todos: MyTodo[];
 }
 
 const db = remote.getGlobal('db') as Lokijs;
@@ -25,9 +27,6 @@ export default new Vuex.Store<MyState>({
     },
   } as GetterTree<MyState, MyState>,
   mutations: {
-    [RELOAD_SNIPPETS](state: MyState, payload: MySnippet[]) {
-      state.snippets.splice(0, 0, ...payload);
-    },
     [ADD_SNIPPET](state: MyState, payload: MySnippet) {
       state.snippets.push(payload);
     },
@@ -41,9 +40,6 @@ export default new Vuex.Store<MyState>({
     },
   } as MutationTree<MyState>,
   actions: {
-    [RELOAD_SNIPPETS](injectee: ActionContext<MyState, MyState>) {
-      injectee.commit(RELOAD_SNIPPETS, snippetsCol.data);
-    },
     [ADD_SNIPPET](injectee: ActionContext<MyState, MyState>, snippet: MySnippet) {
       const snip = snippetsCol.insert(snippet);
       db.saveDatabase();
