@@ -76,33 +76,11 @@ export default class TodoItem extends Vue {
     align-self: center;
   }
   &-tools {
-    min-width: @unit * 11;
+    min-width: @unit * 3;
     margin-left: @unit;
     align-self: center;
     button + button {
       margin-left: @unit;
-    }
-  }
-}
-
-.st-todo {
-  display: flex;
-  flex-direction: column;
-  border-radius: 2px;
-  border: 1px solid #e8e8e8;
-  text-align: left;
-  &:hover {
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.09);
-  }
-  
-  &-body {
-    padding: @unit;
-    word-break: break-word;
-    & > pre {
-      margin: 0;
-    }
-    & textarea {
-      white-space: pre;
     }
   }
   & + & {
