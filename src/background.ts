@@ -1,6 +1,6 @@
 'use strict'
 
-import { app, protocol, BrowserWindow, Menu, clipboard } from 'electron'
+import { app, protocol, BrowserWindow, Tray, Menu, clipboard, globalShortcut } from 'electron'
 import {
   createProtocol,
   installVueDevtools
@@ -8,9 +8,10 @@ import {
 import Lokijs from 'lokijs';
 import MyGlobal from '@/classes/MyGlobal';
 import fs from 'fs';
-import MyBrowserWindow from './classes/MyBrowserWindow';
 
 const isDevelopment = process.env.NODE_ENV !== 'production';
+
+const SHOW_WINDOW_HOTKEY = 'CommandOrControl+Alt+Q';
 
 // global clipboard
 (global as MyGlobal).clipboard = clipboard;
@@ -39,20 +40,22 @@ const lokiDB = new Lokijs('./db/st.db', {
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
-let win: MyBrowserWindow | null
+let win: BrowserWindow | null;
+let tray: Tray | null;
 
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([{scheme: 'app', privileges: { secure: true, standard: true } }])
 
 function createWindow () {
   // Create the browser window.
-  win = new MyBrowserWindow({ 
+  win = new BrowserWindow({ 
     width: 400, 
     height: 800, 
     alwaysOnTop: true, 
     webPreferences: {
       nodeIntegration: true
-    } 
+    },
+    icon: 'src/assets/icon.jpg' 
   })
   win.setMaximizable(false);
   win.setMinimumSize(400, 600);
@@ -67,9 +70,32 @@ function createWindow () {
     // Load the index.html when not in development
     win.loadURL('app://./index.html')
   }
-
+  win.on('close', (e: any) => {
+    if (!win) return;
+    e.preventDefault();
+    win.hide();
+  })
   win.on('closed', () => {
     win = null
+    tray = null
+  })
+
+  // create tray
+  tray = new Tray('src/assets/icon.jpg');
+  const contextMenu = Menu.buildFromTemplate([
+    { label: 'Exit', type: 'normal', role: 'quit' }
+  ])
+  tray.setToolTip('snippetodo')
+  tray.setContextMenu(contextMenu)
+  tray.on('click', () => {
+    if (!win) return;
+    win.show();
+  });
+
+  // register global hotkey
+  globalShortcut.register(SHOW_WINDOW_HOTKEY, () => {
+    if (!win) return;
+    win.show();
   })
 }
 
@@ -103,6 +129,11 @@ app.on('ready', async () => {
     }
   }
   createWindow()
+})
+
+app.on('will-quit', () => {
+  // unregister all hotkeys
+  globalShortcut.unregisterAll()
 })
 
 // Exit cleanly on request from parent process in development mode.
