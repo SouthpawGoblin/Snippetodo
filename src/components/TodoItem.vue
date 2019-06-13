@@ -1,7 +1,7 @@
 <template>
   <div class="st-todo" @mouseenter="showTools = true;" @mouseleave="showTools = false;">
     <div class="st-todo-content">
-      <a-checkbox v-if="!editing" @change="onCheckChanged($event)">{{todo.content}}</a-checkbox>
+      <a-checkbox v-if="!editing" @change="onCheckChanged($event)" :class="todo.finished ? 'checked' : ''" :checked="checked">{{todo.content}}</a-checkbox>
       <a-input v-if="editing" size="small" placeholder="todo content" v-model="todo.content" />
     </div>
     <div class="st-todo-tools" v-show="showTools">
@@ -22,6 +22,7 @@ import MyTodo from '@/classes/MyTodo';
 })
 export default class TodoItem extends Vue {
   @Prop() private todoItem!: MyTodo;
+  @Prop() private checked!: boolean;
   private todo: MyTodo | null = null;
   private showTools: boolean = false;
   private editing: boolean = false;
@@ -33,6 +34,7 @@ export default class TodoItem extends Vue {
   onCheckChanged(e: any) {
     if (this.todo) {
       this.todo.finished = e.target.checked;
+      this.$emit('checkChanged', this.todo);
     }
   }
 
@@ -85,6 +87,10 @@ export default class TodoItem extends Vue {
   }
   & + & {
     margin-top: @unit;
+  }
+  & .checked {
+    text-decoration: line-through;
+    font-style: italic;
   }
 }
 

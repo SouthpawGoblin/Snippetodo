@@ -3,9 +3,22 @@
     <VuePerfectScrollbar ref="scroll">
       <div class="todo-list">
         <TodoItem 
-          v-for="todo in todos" 
+          v-for="todo in unfinishedTodos"
           :key="todo.id" 
           :todo-item="todo"
+          :checked="todo.finished"
+          @checkChanged="updateTodo"
+          @update="updateTodo"
+          @delete="deleteTodo">
+        </TodoItem>
+      </div>
+      <div class="todo-list">
+        <TodoItem 
+          v-for="todo in finishedTodos" 
+          :key="todo.id" 
+          :todo-item="todo"
+          :checked="todo.finished"
+          @checkChanged="updateTodo"
           @update="updateTodo"
           @delete="deleteTodo">
         </TodoItem>
@@ -39,6 +52,18 @@ import VuePerfectScrollbar from 'vue-perfect-scrollbar'
 export default class TodoView extends Vue {
   private todos: MyTodo[] = this.$store.getters.todos;
   private newTodoContent: string = '';
+
+  get unfinishedTodos() {
+    return this.todos.filter((todo: MyTodo) => {
+      return todo.finished === false;
+    })
+  }
+
+  get finishedTodos() {
+    return this.todos.filter((todo: MyTodo) => {
+      return todo.finished === true;
+    })
+  }
 
   createTodo() {
     if (!this.newTodoContent.length) return;
