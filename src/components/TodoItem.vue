@@ -5,9 +5,9 @@
       <a-input v-if="editing" size="small" placeholder="todo content" v-model="todo.content" />
     </div>
     <div class="st-todo-tools" v-show="showTools">
-      <a-button shape="circle" size="small" icon="edit" title="edit" v-show="!editing" @click="beginEdit"></a-button>
-      <a-button shape="circle" size="small" icon="check" title="confirm" v-show="editing" @click="confirmEdit"></a-button>
-      <a-button shape="circle" size="small" type="danger" icon="delete" title="delete" v-if="!todo.finished" :disabled="editing" @click="remove"></a-button>
+      <a-button shape="circle" size="small" icon="edit" title="edit" v-if="!todo.finished" v-show="!editing" @click="beginEdit"></a-button>
+      <a-button shape="circle" size="small" icon="check" title="confirm" v-if="!todo.finished" v-show="editing" @click="confirmEdit"></a-button>
+      <a-button shape="circle" size="small" type="danger" icon="delete" title="delete" :disabled="editing" @click="remove"></a-button>
     </div>
   </div>
 </template>
@@ -78,9 +78,10 @@ export default class TodoItem extends Vue {
     align-self: center;
   }
   &-tools {
-    min-width: @unit * 3;
+    min-width: @unit * 7;
     margin-left: @unit;
     align-self: center;
+    text-align: right;
     button + button {
       margin-left: @unit;
     }

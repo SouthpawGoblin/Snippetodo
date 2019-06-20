@@ -17,7 +17,7 @@
       <a-alert v-if="showSuccessAlert" message="Snippet Copied!" type="success" showIcon />
       <a-alert v-if="showErrorAlert" message="Copy Failed" type="error" showIcon />
       <a-textarea 
-        placeholder="Input snippet content, Ctrl+Enter to submit." 
+        placeholder="Input snippet content here, Ctrl+Enter to submit." 
         :autosize="{ minRows: 6, maxRows: 6 }" 
         v-model="newSnippetContent"
         @pressEnter="onPressEnter($event)"/>

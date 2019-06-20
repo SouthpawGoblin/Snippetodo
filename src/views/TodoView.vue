@@ -12,7 +12,11 @@
           @delete="deleteTodo">
         </TodoItem>
       </div>
-      <div class="todo-list">
+      <a-divider v-show="finishedTodos.length > 0">
+        <a-button class="btn-divider" size="small" @click="showFinished = !showFinished">{{showFinished ? 'hide' : 'show'}} finished</a-button>
+        <a-button class="btn-divider" size="small" type="danger" @click="clearFinishedTodos">clear finished</a-button>
+      </a-divider>
+      <div v-show="finishedTodos.length > 0 && showFinished" class="todo-list">
         <TodoItem 
           v-for="todo in finishedTodos" 
           :key="todo.id" 
@@ -26,7 +30,7 @@
     </VuePerfectScrollbar>
     <div class="todo-textarea">
       <a-textarea 
-        placeholder="Input TODO content, Ctrl+Enter to submit." 
+        placeholder="Input TODO content here, Ctrl+Enter to submit." 
         :autosize="{ minRows: 6, maxRows: 6 }" 
         v-model="newTodoContent"
         @pressEnter="onPressEnter($event)"/>
@@ -52,6 +56,7 @@ import VuePerfectScrollbar from 'vue-perfect-scrollbar'
 export default class TodoView extends Vue {
   private todos: MyTodo[] = this.$store.getters.todos;
   private newTodoContent: string = '';
+  private showFinished: boolean = true;
 
   get unfinishedTodos() {
     return this.todos.filter((todo: MyTodo) => {
@@ -78,6 +83,13 @@ export default class TodoView extends Vue {
 
   deleteTodo(todo: MyTodo) {
     this.$store.dispatch(DELETE_TODO, todo);
+    this.updateScroll();
+  }
+
+  clearFinishedTodos() {
+    this.finishedTodos.forEach((todo) => {
+      this.$store.dispatch(DELETE_TODO, todo);
+    });
     this.updateScroll();
   }
 
@@ -109,6 +121,9 @@ export default class TodoView extends Vue {
     flex: auto;
     overflow-x: hidden; 
     overflow-y: auto;
+  }
+  & .btn-divider + .btn-divider {
+    margin-left: @unit;
   }
   & .todo-textarea {
     margin-top: @unit * 2;
