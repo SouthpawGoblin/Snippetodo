@@ -1,5 +1,6 @@
 'use strict'
 
+declare const __static: string;
 import { app, protocol, BrowserWindow, Tray, Menu, clipboard, globalShortcut } from 'electron'
 import {
   createProtocol,
@@ -8,6 +9,7 @@ import {
 import Lokijs from 'lokijs';
 import MyGlobal from '@/classes/MyGlobal';
 import fs from 'fs';
+import path from 'path';
 
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
@@ -55,7 +57,7 @@ function createWindow () {
     webPreferences: {
       nodeIntegration: true
     },
-    icon: 'src/assets/icon.jpg' 
+    icon: path.join(__static, 'icon.jpg')
   })
   win.setMaximizable(false);
   win.setMinimumSize(400, 600);
@@ -81,9 +83,15 @@ function createWindow () {
   })
 
   // create tray
-  tray = new Tray('src/assets/icon.jpg');
+  tray = new Tray(path.join(__static, 'icon.jpg'));
   const contextMenu = Menu.buildFromTemplate([
-    { label: 'Exit', type: 'normal', role: 'quit' }
+    { 
+      label: 'Exit', 
+      type: 'normal', 
+      click: (menuItem, browserWindow, event) => {
+        process.exit();
+      }
+    }
   ])
   tray.setToolTip('snippetodo')
   tray.setContextMenu(contextMenu)
