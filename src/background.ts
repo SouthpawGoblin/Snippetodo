@@ -95,7 +95,7 @@ function createWindow () {
       }
     }
   ])
-  tray.setToolTip('snippetodo')
+  tray.setToolTip('Butler')
   tray.setContextMenu(contextMenu)
   tray.on('click', () => {
     if (!win) return;

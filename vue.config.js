@@ -6,4 +6,13 @@ module.exports = {
       }
     }
   },
+  pluginOptions: {
+    electronBuilder: {
+      builderOptions: {
+        nsis: {
+          oneClick: true
+        }
+      }
+    }
+  }
 }
