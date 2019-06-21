@@ -1,3 +1,3 @@
 # Butler
 
-### A desktop quick note for snippets and TODOs ~
+### A desktop quick note app with snippets and TODOs support ~
