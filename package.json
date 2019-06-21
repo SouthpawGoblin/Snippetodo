@@ -1,9 +1,9 @@
 {
-  "name": "snippetodo",
-  "version": "1.0.0",
+  "name": "butler",
+  "version": "1.0.2",
   "author": "Roger Qi",
   "description": "A desktop quick note for snippets and TODOs ~",
-  "homepage": "https://github.com/SouthpawGoblin/snippetodo",
+  "homepage": "https://github.com/SouthpawGoblin/Butler",
   "keywords": [
     "note",
     "snippet",

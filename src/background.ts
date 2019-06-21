@@ -11,35 +11,6 @@ import MyGlobal from '@/classes/MyGlobal';
 import fs from 'fs';
 import path from 'path';
 
-const isDevelopment = process.env.NODE_ENV !== 'production';
-
-const SHOW_WINDOW_HOTKEY = 'CommandOrControl+Alt+Q';
-
-// global clipboard
-(global as MyGlobal).clipboard = clipboard;
-
-// load lokijs db
-if (!fs.existsSync('./db')) {
-  fs.mkdirSync('./db');
-}
-const lokiDB = new Lokijs('./db/st.db', {
-  autoload: true,
-  autoloadCallback: (err) => {
-    if (!lokiDB.getCollection('snippets')) {
-      lokiDB.addCollection('snippets', {
-        unique: ['id'],
-      });
-    }
-    if (!lokiDB.getCollection('todos')) {
-      lokiDB.addCollection('todos', {
-        unique: ['id'],
-      });
-    }
-    lokiDB.saveDatabase();
-  },
-});
-(global as MyGlobal).db = lokiDB;
-
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let win: BrowserWindow | null;
@@ -48,11 +19,42 @@ let tray: Tray | null;
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([{scheme: 'app', privileges: { secure: true, standard: true } }])
 
+const isDevelopment = process.env.NODE_ENV !== 'production';
+
+const SHOW_WINDOW_HOTKEY = 'CommandOrControl+Alt+Q';
+
+// global clipboard
+(global as MyGlobal).clipboard = clipboard;
+
+// load lokijs db
+function initDB() {
+  if (!fs.existsSync('./db')) {
+    fs.mkdirSync('./db');
+  }
+  const lokiDB = new Lokijs('./db/st.db', {
+    autoload: true,
+    autoloadCallback: (err) => {
+      if (!lokiDB.getCollection('snippets')) {
+        lokiDB.addCollection('snippets', {
+          unique: ['id'],
+        });
+      }
+      if (!lokiDB.getCollection('todos')) {
+        lokiDB.addCollection('todos', {
+          unique: ['id'],
+        });
+      }
+      lokiDB.saveDatabase();
+    },
+  });
+  (global as MyGlobal).db = lokiDB;
+}
+
 function createWindow () {
   // Create the browser window.
   win = new BrowserWindow({ 
-    width: 400, 
-    height: 800, 
+    width: 450, 
+    height: 750, 
     alwaysOnTop: true, 
     webPreferences: {
       nodeIntegration: true
@@ -107,42 +109,56 @@ function createWindow () {
   })
 }
 
-// Quit when all windows are closed.
-app.on('window-all-closed', () => {
-  // On macOS it is common for applications and their menu bar
-  // to stay active until the user quits explicitly with Cmd + Q
-  if (process.platform !== 'darwin') {
-    app.quit()
-  }
-})
+// single instance mode
+if (!app.requestSingleInstanceLock()) {
+  app.quit()
+} else {
+  // Focus the first instance on second-instance
+  app.on('second-instance', (event, commandLine, workingDirectory) => {
+    if (!win) return
+    win.show()
+    win.focus()
+  })
 
-app.on('activate', () => {
-  // On macOS it's common to re-create a window in the app when the
-  // dock icon is clicked and there are no other windows open.
-  if (win === null) {
-    createWindow()
-  }
-})
-
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
-app.on('ready', async () => {
-  if (isDevelopment && !process.env.IS_TEST) {
-    // Install Vue Devtools
-    try {
-      await installVueDevtools()
-    } catch (e) {
-      console.error('Vue Devtools failed to install:', e.toString())
+  // Quit when all windows are closed.
+  app.on('window-all-closed', () => {
+    // On macOS it is common for applications and their menu bar
+    // to stay active until the user quits explicitly with Cmd + Q
+    if (process.platform !== 'darwin') {
+      app.quit()
     }
-  }
-  createWindow()
-})
+  })
 
-app.on('will-quit', () => {
-  // unregister all hotkeys
-  globalShortcut.unregisterAll()
-})
+  app.on('activate', () => {
+    // On macOS it's common to re-create a window in the app when the
+    // dock icon is clicked and there are no other windows open.
+    if (win === null) {
+      initDB()
+      createWindow()
+    }
+  })
+
+  // This method will be called when Electron has finished
+  // initialization and is ready to create browser windows.
+  // Some APIs can only be used after this event occurs.
+  app.on('ready', async () => {
+    if (isDevelopment && !process.env.IS_TEST) {
+      // Install Vue Devtools
+      try {
+        await installVueDevtools()
+      } catch (e) {
+        console.error('Vue Devtools failed to install:', e.toString())
+      }
+    }
+    initDB()
+    createWindow()
+  })
+
+  app.on('will-quit', () => {
+    // unregister all hotkeys
+    globalShortcut.unregisterAll()
+  })
+}
 
 // Exit cleanly on request from parent process in development mode.
 if (isDevelopment) {
