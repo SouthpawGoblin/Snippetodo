@@ -1,6 +1,6 @@
 <template>
   <div id="todo-view">
-    <VuePerfectScrollbar ref="scroll">
+    <VuePerfectScrollbar ref="scroll" v-show="todos.length > 0">
       <div class="todo-list">
         <TodoItem 
           v-for="todo in unfinishedTodos"
@@ -28,6 +28,10 @@
         </TodoItem>
       </div>
     </VuePerfectScrollbar>
+    <div class="list-placeholder" v-show="todos.length === 0">
+      <a-icon class="ph-icon" type="schedule" />
+      <p class="ph-text">no TODO yet ~</p>
+    </div>
     <div class="todo-textarea">
       <a-textarea 
         placeholder="Input TODO content here, Ctrl+Enter to submit." 
@@ -141,7 +145,7 @@ export default class TodoView extends Vue {
       resize: none;
       white-space: pre;
     }
-  } 
+  }
 }
 </style>
 

@@ -1,6 +1,6 @@
 <template>
   <div id="snippet-view">
-    <VuePerfectScrollbar ref="scroll">
+    <VuePerfectScrollbar ref="scroll" v-show="snippets.length > 0">
       <div class="snippet-list">
         <Snippet 
           v-for="snippet in snippets" 
@@ -13,6 +13,10 @@
         </Snippet>
       </div>
     </VuePerfectScrollbar>
+    <div class="list-placeholder" v-show="snippets.length === 0">
+      <a-icon class="ph-icon" type="book" />
+      <p class="ph-text">no snippet yet ~</p>
+    </div>
     <div class="snippet-textarea">
       <a-alert v-if="showSuccessAlert" message="Snippet Copied!" type="success" showIcon />
       <a-alert v-if="showErrorAlert" message="Copy Failed" type="error" showIcon />

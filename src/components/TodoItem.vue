@@ -71,8 +71,7 @@ export default class TodoItem extends Vue {
   }
   &-content {
     overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    word-break: break-word;
     font-weight: bold;
     flex: auto;
     align-self: center;
