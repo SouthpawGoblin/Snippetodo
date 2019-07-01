@@ -59,7 +59,7 @@ function createWindow () {
     webPreferences: {
       nodeIntegration: true
     },
-    icon: path.join(__static, 'icon.jpg')
+    icon: path.join(__static, 'butler-icon.png')
   })
   win.setMaximizable(false);
   win.setMinimumSize(400, 600);
@@ -85,7 +85,7 @@ function createWindow () {
   })
 
   // create tray
-  tray = new Tray(path.join(__static, 'icon.jpg'));
+  tray = new Tray(path.join(__static, 'butler-icon.png'));
   const contextMenu = Menu.buildFromTemplate([
     { 
       label: 'Exit', 

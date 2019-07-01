@@ -21,7 +21,7 @@
     "build": "vue-cli-service build",
     "electron:build": "vue-cli-service electron:build",
     "electron:serve": "vue-cli-service electron:serve",
-    "electron:generate-icons": "electron-icon-builder --input=./public/icon.jpg --output=build --flatten",
+    "electron:generate-icons": "electron-icon-builder --input=./public/butler-icon.png --output=build --flatten",
     "postinstall": "electron-builder install-app-deps",
     "postuninstall": "electron-builder install-app-deps"
   },
