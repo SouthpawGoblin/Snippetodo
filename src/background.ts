@@ -1,7 +1,7 @@
 'use strict'
 
 declare const __static: string;
-import { app, protocol, BrowserWindow, Tray, Menu, clipboard, globalShortcut } from 'electron'
+import { app, protocol, BrowserWindow, Tray, Menu, clipboard, globalShortcut, desktopCapturer } from 'electron'
 import {
   createProtocol,
   installVueDevtools
@@ -10,6 +10,7 @@ import Lokijs from 'lokijs';
 import MyGlobal from '@/classes/MyGlobal';
 import fs from 'fs';
 import path from 'path';
+import { screenShot } from './utils'
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -25,6 +26,8 @@ const SHOW_WINDOW_HOTKEY = 'CommandOrControl+Alt+Q';
 
 // global clipboard
 (global as MyGlobal).clipboard = clipboard;
+// global screenShot
+(global as MyGlobal).screenShot = screenShot;
 
 // load lokijs db
 function initDB() {
